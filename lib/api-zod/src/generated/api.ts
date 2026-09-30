@@ -94,6 +94,74 @@ export const GetBotStatusResponse = zod.object({
 
 
 /**
+ * @summary Check Telegram user discovery authorization
+ */
+export const GetTelegramUserAuthStatusResponse = zod.object({
+  "configured": zod.boolean(),
+  "authorized": zod.boolean(),
+  "pending": zod.boolean(),
+  "needsPassword": zod.boolean(),
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Send a Telegram login code to the user's account
+ */
+export const sendTelegramUserAuthCodeBodyPhoneNumberMin = 7;
+
+
+
+export const SendTelegramUserAuthCodeBody = zod.object({
+  "phoneNumber": zod.string().min(sendTelegramUserAuthCodeBodyPhoneNumberMin)
+})
+
+export const SendTelegramUserAuthCodeResponse = zod.object({
+  "status": zod.enum(['code_sent']),
+  "isCodeViaApp": zod.boolean(),
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Verify the Telegram login code
+ */
+
+
+
+export const VerifyTelegramUserAuthCodeBody = zod.object({
+  "code": zod.string().min(1)
+})
+
+export const VerifyTelegramUserAuthCodeResponse = zod.object({
+  "configured": zod.boolean(),
+  "authorized": zod.boolean(),
+  "pending": zod.boolean(),
+  "needsPassword": zod.boolean(),
+  "message": zod.string()
+})
+
+
+/**
+ * @summary Verify the user's Telegram 2FA password
+ */
+
+
+
+export const VerifyTelegramUserAuthPasswordBody = zod.object({
+  "password": zod.string().min(1)
+})
+
+export const VerifyTelegramUserAuthPasswordResponse = zod.object({
+  "configured": zod.boolean(),
+  "authorized": zod.boolean(),
+  "pending": zod.boolean(),
+  "needsPassword": zod.boolean(),
+  "message": zod.string()
+})
+
+
+/**
  * @summary List owned Telegram collectibles available for transfer
  */
 export const listOwnedCollectiblesResponseItemsItemTransferFeeStarsMin = 0;

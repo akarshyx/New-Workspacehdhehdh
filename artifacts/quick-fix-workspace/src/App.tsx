@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import {
@@ -1095,6 +1095,148 @@ function HistoryPage() {
   );
 }
 
+type TelegramAuthStatus = {
+  configured: boolean;
+  authorized: boolean;
+  pending: boolean;
+  needsPassword: boolean;
+  message: string;
+};
+
+async function telegramAuthRequest<T>(path: string, body?: Record<string, string>) {
+  const response = await fetch(`/api/telegram/user-auth/${path}`, {
+    method: body ? 'POST' : 'GET',
+    headers: body ? { 'content-type': 'application/json' } : undefined,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const payload = await response.json() as T & { error?: string };
+  if (!response.ok) throw new Error(payload.error || 'Telegram authorization failed.');
+  return payload;
+}
+
+function TelegramUserAuthCard() {
+  const [status, setStatus] = useState<TelegramAuthStatus | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [code, setCode] = useState('');
+  const [password, setPassword] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+
+  const refreshStatus = async () => {
+    try {
+      setStatus(await telegramAuthRequest<TelegramAuthStatus>('status'));
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'Could not read Telegram authorization status.');
+    }
+  };
+
+  useEffect(() => {
+    void refreshStatus();
+  }, []);
+
+  const sendCode = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      const result = await telegramAuthRequest<{ message: string }>('send-code', { phoneNumber });
+      setStatus((current) => current ? { ...current, pending: true, needsPassword: false, message: result.message } : current);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'Telegram could not send the code.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verifyCode = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      const result = await telegramAuthRequest<TelegramAuthStatus>('verify-code', { code });
+      setStatus(result);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'Telegram could not verify the code.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verifyPassword = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      const result = await telegramAuthRequest<TelegramAuthStatus>('verify-password', { password });
+      setStatus(result);
+      setPassword('');
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : 'Telegram could not verify the 2FA password.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className="surface settings-card telegram-auth-card" data-testid="section-telegram-user-auth">
+      <div className="eyebrow">Discovery account</div>
+      <h2 style={{ marginTop: 9 }}>Authorize resale discovery</h2>
+      <p>
+        This signs in your own Telegram account only to read live resale Unique / Collectible Gift listings.
+        It does not buy gifts, spend Stars, or send messages.
+      </p>
+      {status?.authorized ? (
+        <div className="auth-success" role="status">
+          <ShieldCheck size={17} />
+          <div><strong>Telegram account authorized</strong><span>{status.message}</span></div>
+        </div>
+      ) : (
+        <>
+          <form className="auth-form" onSubmit={sendCode}>
+            <label className="field-label" htmlFor="telegram-phone">Telegram phone number</label>
+            <input
+              id="telegram-phone"
+              className="text-input"
+              value={phoneNumber}
+              onChange={(event) => setPhoneNumber(event.target.value)}
+              placeholder="+91 9876543210"
+              autoComplete="tel"
+              disabled={busy || !status?.configured}
+              data-testid="input-telegram-phone"
+            />
+            <button className="button-primary" type="submit" disabled={busy || !status?.configured || !phoneNumber.trim()}>
+              {busy ? 'Sending code…' : 'Send Telegram code'} <ArrowRight size={15} />
+            </button>
+          </form>
+          {status?.pending ? (
+            <form className="auth-form" onSubmit={status.needsPassword ? verifyPassword : verifyCode}>
+              <label className="field-label" htmlFor={status.needsPassword ? 'telegram-password' : 'telegram-code'}>
+                {status.needsPassword ? 'Telegram 2FA password' : 'Telegram login code'}
+              </label>
+              <input
+                id={status.needsPassword ? 'telegram-password' : 'telegram-code'}
+                className="text-input"
+                type={status.needsPassword ? 'password' : 'text'}
+                inputMode={status.needsPassword ? undefined : 'numeric'}
+                value={status.needsPassword ? password : code}
+                onChange={(event) => status.needsPassword ? setPassword(event.target.value) : setCode(event.target.value)}
+                autoComplete={status.needsPassword ? 'current-password' : 'one-time-code'}
+                disabled={busy}
+                data-testid={status.needsPassword ? 'input-telegram-password' : 'input-telegram-code'}
+              />
+              <button className="button-primary" type="submit" disabled={busy || !(status.needsPassword ? password : code).trim()}>
+                {busy ? 'Authorizing…' : status.needsPassword ? 'Finish authorization' : 'Verify Telegram code'} <ArrowRight size={15} />
+              </button>
+            </form>
+          ) : null}
+          {status?.message ? <div className="message-box" style={{ marginTop: 18 }}>{status.message}</div> : null}
+          {error ? <div className="auth-error" role="alert">{error}</div> : null}
+        </>
+      )}
+    </section>
+  );
+}
+
 function SettingsPage() {
   const botQuery = useGetBotStatus();
   const bot = botQuery.data;
@@ -1111,6 +1253,7 @@ function SettingsPage() {
           <p className="hero-copy">Review the connected bot's balance and the current Telegram execution capability.</p>
         </div>
       </div>
+      <TelegramUserAuthCard />
       <div className="settings-layout">
         <section className="surface settings-card" data-testid="section-read-only-settings">
           <div className="eyebrow">Execution policy</div>

@@ -177,6 +177,9 @@ importers:
       '@workspace/db':
         specifier: workspace:*
         version: link:../../lib/db
+      bufferutil:
+        specifier: 4.1.0
+        version: 4.1.0
       cookie-parser:
         specifier: ^1.4.7
         version: 1.4.7
@@ -198,6 +201,9 @@ importers:
       telegram:
         specifier: ^2.26.22
         version: 2.26.22
+      utf-8-validate:
+        specifier: 5.0.10
+        version: 5.0.10
     devDependencies:
       '@types/cookie-parser':
         specifier: ^1.4.10

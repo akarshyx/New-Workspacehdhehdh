@@ -5,6 +5,42 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export interface TelegramUserAuthStatus {
+  configured: boolean;
+  authorized: boolean;
+  pending: boolean;
+  needsPassword: boolean;
+  message: string;
+}
+
+export interface TelegramSendCodeInput {
+  /** @minLength 7 */
+  phoneNumber: string;
+}
+
+export type TelegramSendCodeResponseStatus = typeof TelegramSendCodeResponseStatus[keyof typeof TelegramSendCodeResponseStatus];
+
+
+export const TelegramSendCodeResponseStatus = {
+  code_sent: 'code_sent',
+} as const;
+
+export interface TelegramSendCodeResponse {
+  status: TelegramSendCodeResponseStatus;
+  isCodeViaApp: boolean;
+  message: string;
+}
+
+export interface TelegramVerifyCodeInput {
+  /** @minLength 1 */
+  code: string;
+}
+
+export interface TelegramVerifyPasswordInput {
+  /** @minLength 1 */
+  password: string;
+}
+
 export interface HealthStatus {
   status: string;
 }

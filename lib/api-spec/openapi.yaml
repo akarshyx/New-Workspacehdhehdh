@@ -16,6 +16,8 @@ tags:
     description: Telegram bot connection status
   - name: resale
     description: Read-only Telegram collectible resale inspection and payment-form preflight
+  - name: telegram-auth
+    description: Normal Telegram user authorization for discovery-only access
 paths:
   /healthz:
     get:
@@ -68,6 +70,72 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BotStatus"
+  /telegram/user-auth/status:
+    get:
+      operationId: getTelegramUserAuthStatus
+      tags: [telegram-auth]
+      summary: Check Telegram user discovery authorization
+      responses:
+        "200":
+          description: Telegram user authorization status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelegramUserAuthStatus"
+  /telegram/user-auth/send-code:
+    post:
+      operationId: sendTelegramUserAuthCode
+      tags: [telegram-auth]
+      summary: Send a Telegram login code to the user's account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelegramSendCodeInput"
+      responses:
+        "200":
+          description: Telegram login code delivery status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelegramSendCodeResponse"
+  /telegram/user-auth/verify-code:
+    post:
+      operationId: verifyTelegramUserAuthCode
+      tags: [telegram-auth]
+      summary: Verify the Telegram login code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelegramVerifyCodeInput"
+      responses:
+        "200":
+          description: Authorization status, including whether 2FA is required
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelegramUserAuthStatus"
+  /telegram/user-auth/verify-password:
+    post:
+      operationId: verifyTelegramUserAuthPassword
+      tags: [telegram-auth]
+      summary: Verify the user's Telegram 2FA password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelegramVerifyPasswordInput"
+      responses:
+        "200":
+          description: Authorized Telegram user status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelegramUserAuthStatus"
   /owned-collectibles:
     get:
       operationId: listOwnedCollectibles
@@ -232,6 +300,52 @@ paths:
                 $ref: "#/components/schemas/ResaleTransactionsResponse"
 components:
   schemas:
+    TelegramUserAuthStatus:
+      type: object
+      required: [configured, authorized, pending, needsPassword, message]
+      properties:
+        configured:
+          type: boolean
+        authorized:
+          type: boolean
+        pending:
+          type: boolean
+        needsPassword:
+          type: boolean
+        message:
+          type: string
+    TelegramSendCodeInput:
+      type: object
+      required: [phoneNumber]
+      properties:
+        phoneNumber:
+          type: string
+          minLength: 7
+    TelegramSendCodeResponse:
+      type: object
+      required: [status, isCodeViaApp, message]
+      properties:
+        status:
+          type: string
+          enum: [code_sent]
+        isCodeViaApp:
+          type: boolean
+        message:
+          type: string
+    TelegramVerifyCodeInput:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+          minLength: 1
+    TelegramVerifyPasswordInput:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+          minLength: 1
     HealthStatus:
       type: object
       properties:

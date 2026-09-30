@@ -161,6 +161,14 @@ h1, h2, h3, p { margin: 0; }
 .settings-card { padding: 27px; }
 .settings-card h2 { color: #244b47; font: 700 20px var(--app-font-display); letter-spacing: -.04em; }
 .settings-card > p { margin-top: 8px; color: #7b8980; font-size: 12px; line-height: 1.5; }
+.telegram-auth-card { margin-bottom: 20px; }
+.auth-form { max-width: 520px; }
+.auth-form + .auth-form { margin-top: 16px; }
+.auth-success { display: flex; gap: 11px; align-items: flex-start; margin-top: 21px; padding: 14px; border: 1px solid #bed8c0; border-radius: 10px; background: #edf6e9; color: #34725c; }
+.auth-success svg { flex: 0 0 auto; margin-top: 1px; }
+.auth-success strong { display: block; color: #28584f; font-size: 12px; }
+.auth-success span { display: block; margin-top: 4px; color: #688075; font-size: 11px; line-height: 1.45; }
+.auth-error { margin-top: 15px; padding: 11px 12px; border: 1px solid #e5bcb2; border-radius: 9px; background: #fff0ea; color: #995044; font-size: 11px; line-height: 1.45; }
 .settings-save { width: auto; padding: 0 19px; margin-top: 22px; }
 .capability-list { margin-top: 23px; display: grid; gap: 12px; }
 .capability { display: flex; gap: 11px; align-items: flex-start; padding: 12px 0; border-top: 1px solid #e5e4da; }

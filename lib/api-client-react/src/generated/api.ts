@@ -38,7 +38,12 @@ import type {
   ResalePurchaseResponse,
   ResaleTransactionsResponse,
   SendGiftInput,
-  SendGiftResponse
+  SendGiftResponse,
+  TelegramSendCodeInput,
+  TelegramSendCodeResponse,
+  TelegramUserAuthStatus,
+  TelegramVerifyCodeInput,
+  TelegramVerifyPasswordInput
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -376,6 +381,347 @@ export function useGetBotStatus<TData = Awaited<ReturnType<typeof getBotStatus>>
 
 
 
+
+export const getGetTelegramUserAuthStatusUrl = () => {
+
+
+
+
+  return `/api/telegram/user-auth/status`
+}
+
+/**
+ * @summary Check Telegram user discovery authorization
+ */
+export const getTelegramUserAuthStatus = async ( options?: Parameters<typeof customFetch>[1]): Promise<TelegramUserAuthStatus> => {
+
+  return customFetch<TelegramUserAuthStatus>(getGetTelegramUserAuthStatusUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetTelegramUserAuthStatusQueryKey = () => {
+    return [
+    `/api/telegram/user-auth/status`
+    ] as const;
+    }
+
+
+export const getGetTelegramUserAuthStatusQueryOptions = <TData = Awaited<ReturnType<typeof getTelegramUserAuthStatus>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTelegramUserAuthStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTelegramUserAuthStatusQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTelegramUserAuthStatus>>> = ({ signal }) => getTelegramUserAuthStatus({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTelegramUserAuthStatus>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetTelegramUserAuthStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getTelegramUserAuthStatus>>>
+export type GetTelegramUserAuthStatusQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Check Telegram user discovery authorization
+ */
+
+export function useGetTelegramUserAuthStatus<TData = Awaited<ReturnType<typeof getTelegramUserAuthStatus>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getTelegramUserAuthStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetTelegramUserAuthStatusQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSendTelegramUserAuthCodeUrl = () => {
+
+
+
+
+  return `/api/telegram/user-auth/send-code`
+}
+
+/**
+ * @summary Send a Telegram login code to the user's account
+ */
+export const sendTelegramUserAuthCode = async (telegramSendCodeInput: TelegramSendCodeInput, options?: Parameters<typeof customFetch>[1]): Promise<TelegramSendCodeResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TelegramSendCodeResponse>(getSendTelegramUserAuthCodeUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(telegramSendCodeInput)
+  }
+);}
+
+
+
+
+
+export const getSendTelegramUserAuthCodeMutationKey = () => ['sendTelegramUserAuthCode'] as const;
+
+export const getSendTelegramUserAuthCodeMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendTelegramUserAuthCode>>, TError,SendTelegramUserAuthCodeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof sendTelegramUserAuthCode>>, TError,SendTelegramUserAuthCodeMutationVariables, TContext> => {
+
+const mutationKey = getSendTelegramUserAuthCodeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof sendTelegramUserAuthCode>>, SendTelegramUserAuthCodeMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  sendTelegramUserAuthCode(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SendTelegramUserAuthCodeMutationResult = NonNullable<Awaited<ReturnType<typeof sendTelegramUserAuthCode>>>
+    export type SendTelegramUserAuthCodeMutationBody = BodyType<TelegramSendCodeInput>
+    export type SendTelegramUserAuthCodeMutationError = ErrorType<unknown>
+    export type SendTelegramUserAuthCodeMutationVariables = {data: BodyType<TelegramSendCodeInput>}
+
+    /**
+ * @summary Send a Telegram login code to the user's account
+ */
+export const useSendTelegramUserAuthCode = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof sendTelegramUserAuthCode>>, TError,SendTelegramUserAuthCodeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof sendTelegramUserAuthCode>>,
+        TError,
+        SendTelegramUserAuthCodeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSendTelegramUserAuthCodeMutationOptions(options));
+    }
+
+export const getVerifyTelegramUserAuthCodeUrl = () => {
+
+
+
+
+  return `/api/telegram/user-auth/verify-code`
+}
+
+/**
+ * @summary Verify the Telegram login code
+ */
+export const verifyTelegramUserAuthCode = async (telegramVerifyCodeInput: TelegramVerifyCodeInput, options?: Parameters<typeof customFetch>[1]): Promise<TelegramUserAuthStatus> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TelegramUserAuthStatus>(getVerifyTelegramUserAuthCodeUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(telegramVerifyCodeInput)
+  }
+);}
+
+
+
+
+
+export const getVerifyTelegramUserAuthCodeMutationKey = () => ['verifyTelegramUserAuthCode'] as const;
+
+export const getVerifyTelegramUserAuthCodeMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>, TError,VerifyTelegramUserAuthCodeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>, TError,VerifyTelegramUserAuthCodeMutationVariables, TContext> => {
+
+const mutationKey = getVerifyTelegramUserAuthCodeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>, VerifyTelegramUserAuthCodeMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  verifyTelegramUserAuthCode(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyTelegramUserAuthCodeMutationResult = NonNullable<Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>>
+    export type VerifyTelegramUserAuthCodeMutationBody = BodyType<TelegramVerifyCodeInput>
+    export type VerifyTelegramUserAuthCodeMutationError = ErrorType<unknown>
+    export type VerifyTelegramUserAuthCodeMutationVariables = {data: BodyType<TelegramVerifyCodeInput>}
+
+    /**
+ * @summary Verify the Telegram login code
+ */
+export const useVerifyTelegramUserAuthCode = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>, TError,VerifyTelegramUserAuthCodeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyTelegramUserAuthCode>>,
+        TError,
+        VerifyTelegramUserAuthCodeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyTelegramUserAuthCodeMutationOptions(options));
+    }
+
+export const getVerifyTelegramUserAuthPasswordUrl = () => {
+
+
+
+
+  return `/api/telegram/user-auth/verify-password`
+}
+
+/**
+ * @summary Verify the user's Telegram 2FA password
+ */
+export const verifyTelegramUserAuthPassword = async (telegramVerifyPasswordInput: TelegramVerifyPasswordInput, options?: Parameters<typeof customFetch>[1]): Promise<TelegramUserAuthStatus> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<TelegramUserAuthStatus>(getVerifyTelegramUserAuthPasswordUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(telegramVerifyPasswordInput)
+  }
+);}
+
+
+
+
+
+export const getVerifyTelegramUserAuthPasswordMutationKey = () => ['verifyTelegramUserAuthPassword'] as const;
+
+export const getVerifyTelegramUserAuthPasswordMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>, TError,VerifyTelegramUserAuthPasswordMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>, TError,VerifyTelegramUserAuthPasswordMutationVariables, TContext> => {
+
+const mutationKey = getVerifyTelegramUserAuthPasswordMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>, VerifyTelegramUserAuthPasswordMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  verifyTelegramUserAuthPassword(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyTelegramUserAuthPasswordMutationResult = NonNullable<Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>>
+    export type VerifyTelegramUserAuthPasswordMutationBody = BodyType<TelegramVerifyPasswordInput>
+    export type VerifyTelegramUserAuthPasswordMutationError = ErrorType<unknown>
+    export type VerifyTelegramUserAuthPasswordMutationVariables = {data: BodyType<TelegramVerifyPasswordInput>}
+
+    /**
+ * @summary Verify the user's Telegram 2FA password
+ */
+export const useVerifyTelegramUserAuthPassword = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>, TError,VerifyTelegramUserAuthPasswordMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyTelegramUserAuthPassword>>,
+        TError,
+        VerifyTelegramUserAuthPasswordMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyTelegramUserAuthPasswordMutationOptions(options));
+    }
 
 export const getListOwnedCollectiblesUrl = () => {
 
