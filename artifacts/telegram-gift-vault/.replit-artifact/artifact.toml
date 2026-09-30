@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/telegram-gift-vault/"
+title = "Telegram Gift Vault"
+description = "A standalone Telegram collectible and resale workspace for browsing live gift upgrade candidates, authorizing discovery, and reviewing verified resale listings without Replit account access controls."
+version = "1.0.0"
+id = "artifacts/telegram-gift-vault"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/telegram-gift-vault/" ]
+localPort = 20555
+
+[services.development]
+run = "pnpm --filter @workspace/telegram-gift-vault run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/telegram-gift-vault", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/telegram-gift-vault/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20555"
+BASE_PATH = "/telegram-gift-vault/"
