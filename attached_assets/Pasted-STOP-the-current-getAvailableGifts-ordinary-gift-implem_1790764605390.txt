@@ -1,0 +1,61 @@
+STOP the current getAvailableGifts / ordinary-gift implementation. That is NOT the flow I want.
+
+I want the RESALE UNIQUE/COLLECTIBLE GIFT flow.
+
+Required architecture:
+
+1. The user selects an actual Unique/Collectible Gift from Telegram's resale marketplace.
+2. The resale listing must provide its real gift identifier/slug and REAL Stars price.
+3. My Telegram recipient ID is:
+   8598790977
+4. The backend must create the resale-gift invoice targeting:
+   to_id = 8598790977
+5. The backend must obtain the real Telegram payment form for that invoice.
+6. Before spending anything, show me:
+   - gift name/sticker
+   - unique gift number if available
+   - resale price in Stars
+   - recipient
+   - any transfer restriction/cooldown Telegram exposes
+7. Ask for explicit confirmation.
+8. ONLY after confirmation, submit the payment using the BOT'S existing Stars balance.
+9. The bot currently has approximately 4,338 Stars. Verify the live balance before payment.
+10. After successful payment, report the real Telegram API result.
+
+IMPORTANT API DISTINCTION:
+
+Do NOT use getAvailableGifts for discovering resale collectibles.
+
+The relevant resale flow is:
+
+USER-SIDE RESALE DISCOVERY
+→ obtain real resale gift slug
+→ inputInvoiceStarGiftResale(slug, to_id)
+→ payments.getPaymentForm
+→ payments.sendStarsForm
+→ bot's Stars payment
+→ collectible delivered to recipient ID 8598790977
+
+Telegram documentation states that getResaleStarGifts is user-only, while getPaymentForm and sendStarsForm can be used by bots. Therefore do NOT claim the entire flow is impossible merely because resale discovery is user-only.
+
+However, DO NOT fake or invent a resale slug.
+
+If the current architecture has no legitimate way to obtain the real resale listing/slug, tell me exactly what input is missing and STOP there. Do not substitute ordinary gifts.
+
+DO NOT:
+- use getAvailableGifts as a substitute
+- send ordinary emoji gifts
+- call ordinary gifts collectible
+- create fake NFT/collectible records
+- use MTProto unless it is strictly required ONLY for the user-side resale discovery component
+- ask for api_id/api_hash just to make the bot payment
+- use Telethon/Pyrogram for the bot payment
+- spend any Stars during testing
+- automatically purchase anything
+
+For testing, first implement/verify the complete non-payment path:
+resale listing → slug → invoice → payment form → display exact price/details → confirmation screen.
+
+Do NOT actually submit sendStarsForm until I explicitly confirm a real purchase.
+
+Reuse the existing project. Do not rebuild unrelated parts or add arbitrary limits.

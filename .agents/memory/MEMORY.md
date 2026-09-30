@@ -1,0 +1,1 @@
+- [Telegram gift flow](telegram-gift-flow.md) — only live Bot API gifts with a positive upgrade cost qualify for the Unique/Collectible flow.

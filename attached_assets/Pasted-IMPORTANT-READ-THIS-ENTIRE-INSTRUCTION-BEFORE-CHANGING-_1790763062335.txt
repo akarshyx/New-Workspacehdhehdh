@@ -1,0 +1,99 @@
+IMPORTANT — READ THIS ENTIRE INSTRUCTION BEFORE CHANGING ANY CODE.
+
+I need you to modify the EXISTING Telegram bot project. Do NOT rebuild the bot from scratch and do NOT create a separate simplified bot.
+
+The main problem is that every time you implement this, you add unnecessary restrictions/limits or change the requested flow. DO NOT do that.
+
+GOAL:
+Implement the Telegram Gift flow using the bot's EXISTING Telegram Bot API token and EXISTING Stars balance.
+
+Recipient:
+Telegram user ID: 8598790977
+Username: @arshxy
+
+REQUIRED FLOW:
+
+1. Use the existing bot token/configuration already present in this project.
+2. Get the bot's REAL current Stars balance using the official Bot API.
+3. Get the REAL currently available gifts using the official Bot API.
+4. Show the user the actual gifts that are currently available and their REAL Stars prices.
+5. I need 7 gifts TOTAL.
+6. Gifts MUST be sent ONE AT A TIME.
+7. BEFORE EVERY SINGLE GIFT:
+   - show the exact gift
+   - show its total Stars cost
+   - show any upgrade cost if the API actually exposes one
+   - show any transfer/resale cooldown or restriction that the API actually exposes
+   - ask for explicit confirmation
+8. DO NOT spend any Stars until I explicitly confirm that individual gift.
+9. After confirmation, send that ONE gift using the official Bot API.
+10. Then move to the next gift and ask for confirmation again.
+11. Never automatically send all 7 gifts.
+12. Never create fake database gifts, fake collectibles, fake balances, fake transactions, or fake confirmation messages.
+
+COLLECTIBLE / UNIQUE GIFT REQUIREMENT:
+
+I specifically want a normal eligible Telegram Gift to be upgraded into a Unique/Collectible Gift using the bot's Stars IF AND ONLY IF the CURRENT OFFICIAL BOT API actually supports that exact flow.
+
+Do NOT pretend that a normal gift is collectible.
+
+If the current Bot API provides:
+- upgrade_star_count
+- pay_for_upgrade
+- or another officially supported mechanism
+
+then use the real API mechanism.
+
+If the currently available gifts do NOT support this, clearly show:
+"Telegram Bot API currently does not expose an eligible gift for this upgrade flow."
+
+Do NOT invent an upgrade endpoint or workaround.
+
+3-MONTH PREMIUM OPTION:
+
+Also provide a separate option for gifting 3 months of Telegram Premium.
+
+Use the official Bot API method for Premium gift/subscription.
+
+The official cost is 1,000 Stars for 3 months.
+
+It must ALSO require explicit confirmation before spending.
+
+IMPORTANT LIMITATION RULE:
+
+Do NOT add arbitrary limits such as:
+- maximum gift price
+- maximum number of gifts
+- minimum balance beyond what Telegram itself requires
+- artificial cooldowns
+- artificial daily limits
+- artificial owner restrictions
+- artificial "safe mode"
+- fake eligibility checks
+
+Only enforce restrictions that are actually required by Telegram's current Bot API or by the existing application's security architecture.
+
+IMPORTANT:
+
+Do NOT use MTProto.
+Do NOT use api_id.
+Do NOT use api_hash.
+Do NOT use Telethon.
+Do NOT use Pyrogram.
+Do NOT create a Telegram user account/session.
+
+This must use the existing BOT TOKEN and Telegram Bot API.
+
+Before coding, inspect the EXISTING project and reuse its existing architecture, database, handlers, configuration, and UI wherever possible.
+
+Do NOT delete or rewrite unrelated working functionality.
+
+Do NOT ask me to provide another API, another Telegram account, api_id, api_hash, or user session.
+
+If something is genuinely impossible through the current official Bot API, STOP that specific part and tell me exactly which API limitation prevents it. Do not implement a fake workaround.
+
+Most importantly:
+DO NOT over-engineer this.
+DO NOT add unnecessary restrictions.
+DO NOT change the requested flow.
+Make the smallest necessary changes to the existing project and implement the actual supported Telegram API functionality directly.

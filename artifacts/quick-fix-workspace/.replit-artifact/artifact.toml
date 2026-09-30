@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Quick Fix Workspace"
+description = "A Telegram collectible management console for browsing gift upgrades, inspecting resale listings, checking bot status, and reviewing purchase history."
+version = "1.0.0"
+id = "artifacts/quick-fix-workspace"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18991
+
+[services.development]
+run = "pnpm --filter @workspace/quick-fix-workspace run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/quick-fix-workspace", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/quick-fix-workspace/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18991"
+BASE_PATH = "/"
